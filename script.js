@@ -205,7 +205,77 @@
     playSound('unlock');
     const lockscreen = document.getElementById('lockscreen');
     if (lockscreen) {
-      lockscreen.classList.add('unlocked');
+      lockscreen.style.transition = 'transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.45s ease';
+      lockscreen.style.transform = 'translateY(-100%)';
+      lockscreen.style.opacity = '0';
+      setTimeout(() => {
+        lockscreen.classList.add('unlocked');
+        lockscreen.style.pointerEvents = 'none';
+      }, 500);
+    }
+  }
+
+  // Swipe to Unlock Gesture Engine (Touch + Mouse Drag)
+  function initSwipeToUnlock() {
+    const lockscreen = document.getElementById('lockscreen');
+    const lockBottom = document.getElementById('lock-bottom-area');
+    if (!lockscreen) return;
+
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+
+    function onPointerDown(e) {
+      if (state.isUnlocked) return;
+      isDragging = true;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      currentY = startY;
+      lockscreen.style.transition = 'none';
+    }
+
+    function onPointerMove(e) {
+      if (!isDragging || state.isUnlocked) return;
+      currentY = e.touches ? e.touches[0].clientY : e.clientY;
+      const deltaY = currentY - startY;
+
+      if (deltaY < 0) { // dragging upwards
+        const pullUp = Math.abs(deltaY);
+        lockscreen.style.transform = `translateY(-${pullUp}px)`;
+        const opacity = Math.max(0.1, 1 - (pullUp / 320));
+        lockscreen.style.opacity = opacity;
+      }
+    }
+
+    function onPointerUp(e) {
+      if (!isDragging || state.isUnlocked) return;
+      isDragging = false;
+      const deltaY = currentY - startY;
+
+      if (deltaY < -50) { // Swiped up more than 50px -> Unlock!
+        unlockPhone();
+      } else {
+        // Snap back down smoothly
+        lockscreen.style.transition = 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease';
+        lockscreen.style.transform = 'translateY(0)';
+        lockscreen.style.opacity = '1';
+      }
+    }
+
+    // Touch events
+    lockscreen.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('touchmove', onPointerMove, { passive: true });
+    window.addEventListener('touchend', onPointerUp, { passive: true });
+
+    // Mouse drag events
+    lockscreen.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    // Tap/Click fallback
+    if (lockBottom) {
+      lockBottom.addEventListener('click', () => {
+        if (!state.isUnlocked) unlockPhone();
+      });
     }
   }
 
@@ -817,10 +887,10 @@ ${data.profile.bio}`;
     initTerminal();
     initBot();
 
-    // Unlock listeners
-    const swipeBtn = document.getElementById('swipe-unlock-btn');
+    // Swipe to Unlock Gesture Engine
+    initSwipeToUnlock();
+
     const lockNotif = document.getElementById('lock-notif');
-    if (swipeBtn) swipeBtn.addEventListener('click', unlockPhone);
     if (lockNotif) lockNotif.addEventListener('click', () => {
       unlockPhone();
       setTimeout(() => openApp('projects'), 300);

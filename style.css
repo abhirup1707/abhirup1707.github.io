@@ -618,26 +618,70 @@ html, body {
 
 .lock-bottom {
   text-align: center;
-}
-
-.swipe-unlock-btn {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 10px 22px;
-  border-radius: 999px;
-  color: #fff;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  animation: bounce-hint 2s infinite ease-in-out;
+  gap: 10px;
+  cursor: grab;
+  padding: 14px 20px 8px 20px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  transition: transform 0.2s ease;
 }
 
-.swipe-unlock-btn:hover {
-  background: rgba(0, 242, 254, 0.25);
-  border-color: var(--accent-cyan);
+.lock-bottom:active {
+  cursor: grabbing;
+}
+
+.swipe-text-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.swipe-chevron-animated {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  animation: swipe-chevron-bounce 1.6s ease-in-out infinite;
+}
+
+@keyframes swipe-chevron-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(-6px); opacity: 1; color: var(--accent-cyan); }
+}
+
+.swipe-shimmer-text {
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.35) 0%, #ffffff 50%, rgba(255, 255, 255, 0.35) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text 2.4s linear infinite;
+}
+
+@keyframes shimmer-text {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.swipe-handle-bar {
+  width: 136px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease, width 0.2s ease, background-color 0.2s ease;
+}
+
+.lock-bottom:hover .swipe-handle-bar {
+  transform: translateY(-2px);
+  width: 145px;
+  background: #ffffff;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.8);
 }
 
 /* ==========================================================================
