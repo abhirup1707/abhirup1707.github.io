@@ -55,14 +55,57 @@
       <div class="phone-screen">
         <div class="screen-wallpaper"></div>
 
-        <!-- Dynamic Island / Pill Notch -->
+        <!-- Dynamic Island / Pill Notch with Interactive Media Visualizer -->
         <div class="dynamic-island-container">
-          <div class="dynamic-island" id="dynamic-island" title="Dynamic Island: Tap to inspect">
-            <div class="island-camera"></div>
-            <div class="island-sensor">
-              <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-green);"></span>
-              <span>DevOS</span>
+          <div class="dynamic-island" id="dynamic-island" title="Tap to expand Music & Visualizer">
+            
+            <!-- Collapsed View -->
+            <div class="island-collapsed" id="island-collapsed">
+              <div class="island-camera"></div>
+              <div class="island-mini-equalizer">
+                <span class="mini-bar b1"></span>
+                <span class="mini-bar b2"></span>
+                <span class="mini-bar b3"></span>
+              </div>
+              <div class="island-sensor">
+                <span class="island-dot"></span>
+                <span id="island-pill-label">EchoBeat</span>
+              </div>
             </div>
+
+            <!-- Expanded Media Player View -->
+            <div class="island-expanded-view" id="island-expanded-view">
+              <div class="island-track-row">
+                <div class="island-art-icon"><i class="fa-solid fa-headphones"></i></div>
+                <div class="island-track-info">
+                  <h4>EchoTown Lo-Fi Synth</h4>
+                  <p>Ambient Cyber Radio &bull; DevOS</p>
+                </div>
+                <button class="island-audio-btn" id="island-audio-btn" title="Toggle Lo-Fi Audio">
+                  <i class="fa-solid fa-play" id="island-audio-icon"></i>
+                </button>
+              </div>
+
+              <!-- Animated Equalizer Spectrum Bars -->
+              <div class="island-spectrum-row">
+                <div class="spectrum-bars" id="spectrum-bars">
+                  <span class="spec-bar s1"></span>
+                  <span class="spec-bar s2"></span>
+                  <span class="spec-bar s3"></span>
+                  <span class="spec-bar s4"></span>
+                  <span class="spec-bar s5"></span>
+                  <span class="spec-bar s6"></span>
+                  <span class="spec-bar s7"></span>
+                  <span class="spec-bar s8"></span>
+                  <span class="spec-bar s9"></span>
+                  <span class="spec-bar s10"></span>
+                  <span class="spec-bar s11"></span>
+                  <span class="spec-bar s12"></span>
+                </div>
+                <span class="island-live-tag">● LIVE</span>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -119,9 +162,14 @@
                 <div class="profile-info">
                   <div class="profile-name-row">
                     <h1>Abhirup Chakrabarti</h1>
-                    <button class="mobile-ide-pill" id="mobile-mode-btn" title="Toggle Workstation / Code IDE Mode">
-                      <i class="fa-solid fa-code"></i> IDE
-                    </button>
+                    <div style="display:flex;gap:5px;align-items:center;">
+                      <button class="resume-pill-btn" id="profile-resume-btn" title="View & Download Resume CV">
+                        <i class="fa-solid fa-file-arrow-down"></i> CV
+                      </button>
+                      <button class="mobile-ide-pill" id="mobile-mode-btn" title="Toggle Workstation / Code IDE Mode">
+                        <i class="fa-solid fa-code"></i> IDE
+                      </button>
+                    </div>
                   </div>
                   <h2>Full-Stack Developer</h2>
                   <span class="location-tag">
@@ -218,7 +266,16 @@
                 <span class="app-title">Settings</span>
               </div>
 
-              <!-- 9. Project Demos App Folder / Group -->
+              <!-- 9. Resume App -->
+              <div class="app-icon-item" data-app="resume" title="View & Download Resume">
+                <div class="app-glyph glyph-resume">
+                  <i class="fa-solid fa-file-pdf"></i>
+                  <span class="app-badge-pill" style="background:#ef4444;">CV</span>
+                </div>
+                <span class="app-title">Resume</span>
+              </div>
+
+              <!-- 10. Project Demos App Folder / Group -->
               <div class="app-icon-item" id="open-folder-btn" title="Open Project Demos Folder">
                 <div class="app-glyph glyph-folder">
                   <div class="folder-mini-grid">
@@ -728,6 +785,205 @@
                 <p style="color:var(--accent-green);font-size:0.75rem;margin-top:4px;">Available for remote & on-site software engineering opportunities</p>
               </div>
 
+            </div>
+          </div>
+
+          <!-- ==========================================
+               App Window: Resume / CV Viewer & PDF Export
+               ========================================== -->
+          <div class="app-view" id="app-resume">
+            <div class="app-header-nav">
+              <button class="nav-back-btn" onclick="window.closeCyberApp()">
+                <i data-lucide="chevron-left"></i> Home
+              </button>
+              <span class="nav-app-title">Curriculum Vitae</span>
+              <button class="resume-header-download-btn" onclick="window.printResume()" title="Print / Save PDF">
+                <i class="fa-solid fa-download"></i> <span>Save PDF</span>
+              </button>
+            </div>
+
+            <div class="app-scroll-body" id="resume-printable-area">
+              
+              <!-- Quick Action Bar -->
+              <div class="resume-actions-bar">
+                <button class="btn-cv-action btn-cv-print" onclick="window.printResume()">
+                  <i class="fa-solid fa-file-pdf"></i> Download / Print PDF
+                </button>
+                <a href="mailto:achakrabarti168@gmail.com?subject=Job%20Opportunity%20for%20Abhirup%20Chakrabarti" class="btn-cv-action btn-cv-hire">
+                  <i class="fa-solid fa-envelope"></i> Contact for Hire
+                </a>
+              </div>
+
+              <!-- Clean Printable Resume Sheet -->
+              <article class="resume-sheet">
+                
+                <!-- Resume Header -->
+                <header class="cv-sheet-header">
+                  <h1 class="cv-name">Abhirup Chakrabarti</h1>
+                  <p class="cv-subtitle">Full-Stack Web Developer & Mathematics Undergraduate</p>
+                  <div class="cv-contact-line">
+                    <span>Kolkata, West Bengal, India</span> &bull;
+                    <a href="tel:+919123737425">+91 9123737425</a> &bull;
+                    <a href="mailto:achakrabarti168@gmail.com">achakrabarti168@gmail.com</a>
+                  </div>
+                  <div class="cv-links-line">
+                    <a href="https://github.com/abhirup1707" target="_blank">github.com/abhirup1707</a> &bull;
+                    <a href="https://linkedin.com/in/abhirupchakrabarti" target="_blank">linkedin.com/in/abhirupchakrabarti</a> &bull;
+                    <a href="https://abhirup1707.github.io" target="_blank">abhirup1707.github.io</a>
+                  </div>
+                </header>
+
+                <hr class="cv-divider" />
+
+                <!-- Professional Summary -->
+                <section class="cv-section">
+                  <h2 class="cv-sec-title">Professional Summary</h2>
+                  <p class="cv-text">
+                    Full-stack web developer and Mathematics undergraduate at Jadavpur University with hands-on experience building AI-powered and real-time web applications using HTML, CSS, JavaScript, React, and Node.js. Completed two web development internships delivering production-ready projects including multiplayer games, a geolocation weather app, an interactive space-themed portfolio, and a synchronized media-sharing platform. Strong foundation in frontend development, backend development, REST APIs, and WebSockets, with exposure to YouTube API integration and cybersecurity principles. Seeking a software developer role to contribute to scalable, impactful products.
+                  </p>
+                </section>
+
+                <hr class="cv-divider" />
+
+                <!-- Skills -->
+                <section class="cv-section">
+                  <h2 class="cv-sec-title">Technical Skills</h2>
+                  <div class="cv-item">
+                    <p><strong>Programming Languages:</strong> JavaScript (ES6+), Python, C, C#, SQL, MATLAB, HTML5, CSS3</p>
+                    <p><strong>Frameworks & Libraries:</strong> React.js, Node.js</p>
+                    <p><strong>Web Development:</strong> Frontend Development, Backend Development, REST APIs, WebSockets, Responsive Design, YouTube API, P2P Streaming</p>
+                    <p><strong>Tools & Platforms:</strong> Git, GitHub, VS Code, Geolocation APIs, AI API Integration, Render, Vercel, Firebase</p>
+                    <p><strong>Core Disciplines:</strong> Real-Time Systems, Object-Oriented Programming, Data Structures & Algorithms, Cybersecurity Fundamentals, Discrete & Applied Mathematics</p>
+                  </div>
+                </section>
+
+                <hr class="cv-divider" />
+
+                <!-- Work Experience -->
+                <section class="cv-section">
+                  <h2 class="cv-sec-title">Work Experience</h2>
+                  
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>Web Development Intern</strong>
+                      <span class="cv-date">August 2025 – October 2025</span>
+                    </div>
+                    <div class="cv-sub">CodSoft | Remote</div>
+                    <ul class="cv-bullets">
+                      <li>Developed an AI-powered calculator web application using HTML, CSS, and JavaScript, enabling users to perform general and complex arithmetic calculations.</li>
+                      <li>Integrated AI API capabilities to extend standard calculator functionality, delivering a responsive and user-friendly interface.</li>
+                      <li>Collaborated on iterative development cycles, testing and debugging JavaScript logic to ensure accurate computation results.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>Web Development Intern</strong>
+                      <span class="cv-date">July 2025</span>
+                    </div>
+                    <div class="cv-sub">AI Wallah | Remote</div>
+                    <ul class="cv-bullets">
+                      <li>Built an AI-powered personal portfolio website using HTML, CSS, and JavaScript, enabling dynamic content rendering to showcase skills and projects.</li>
+                      <li>Developed a geolocation-based weather web application that detects the user's current location via browser APIs and displays real-time weather information.</li>
+                      <li>Implemented responsive layouts ensuring cross-device compatibility across desktop and mobile platforms.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                <hr class="cv-divider" />
+
+                <!-- Projects -->
+                <section class="cv-section">
+                  <h2 class="cv-sec-title">Key Projects</h2>
+
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>FootyVerse – Real-Time Football PvP Game</strong>
+                      <span class="cv-date">2026</span>
+                    </div>
+                    <p class="cv-tech">Tech: HTML5, CSS3, JavaScript, Canvas 2D, Physics Engine | Demo: footyverse-pvp.vercel.app</p>
+                    <ul class="cv-bullets">
+                      <li>Fast-paced multiplayer soccer physics battle with live PvP matchmaking and responsive controls.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>Rocket League Web – 3D Car Soccer</strong>
+                      <span class="cv-date">2026</span>
+                    </div>
+                    <p class="cv-tech">Tech: HTML5, JavaScript, Physics, WebGL | Demo: rocket-league-one.vercel.app</p>
+                    <ul class="cv-bullets">
+                      <li>Thrilling web vehicular football featuring supersonic aerial boosts and stadium collision physics.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>EchoTown – Collaborative Media Platform</strong>
+                      <span class="cv-date">July 2026</span>
+                    </div>
+                    <p class="cv-tech">Tech: HTML, CSS, JS, Node.js, WebSockets, YouTube API, P2P Streaming | Demo: echo-town.vercel.app</p>
+                    <ul class="cv-bullets">
+                      <li>Synchronized media platform for shared rooms with WebSockets playback sync, YouTube API queueing, and P2P local file broadcasting.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>OrbitFolio – Space-Themed Interactive Portfolio</strong>
+                      <span class="cv-date">June 2026 – July 2026</span>
+                    </div>
+                    <p class="cv-tech">Tech: HTML, CSS, JS, React.js, AI Chatbot API | Demo: abhirup-space.vercel.app</p>
+                    <ul class="cv-bullets">
+                      <li>Interactive 3D solar system portfolio with planetary drill-down navigation and real-time AI assistant.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>RepoLens – AI-Powered GitHub Repository Analyzer</strong>
+                      <span class="cv-date">2026</span>
+                    </div>
+                    <p class="cv-tech">Tech: JavaScript, Node.js, AI APIs, Vercel, Render | Demo: repolens-github.vercel.app</p>
+                    <ul class="cv-bullets">
+                      <li>Deep repository intelligence tool extracting codebase architecture with contextual AI query chat.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                <hr class="cv-divider" />
+
+                <!-- Education & Certifications -->
+                <section class="cv-section">
+                  <h2 class="cv-sec-title">Education & Certifications</h2>
+                  
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>Bachelor of Science (Hons.) in Mathematics</strong>
+                      <span class="cv-date">2023 – 2027 (Expected)</span>
+                    </div>
+                    <div class="cv-sub">Jadavpur University | Kolkata, West Bengal</div>
+                  </div>
+
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>Senior Secondary Certificate (Class XII) – Science (84%)</strong>
+                      <span class="cv-date">2023</span>
+                    </div>
+                    <div class="cv-sub">Nava Nalanda High School | WBCHSE Board</div>
+                  </div>
+
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <strong>Cybersecurity Certificate</strong>
+                      <span class="cv-date">February 2025 – May 2025</span>
+                    </div>
+                    <div class="cv-sub">Coursera (Online) &bull; Network security, threat modeling, vulnerability scanning & secure coding.</div>
+                  </div>
+                </section>
+
+              </article>
             </div>
           </div>
 

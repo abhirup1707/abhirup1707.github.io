@@ -85,6 +85,96 @@
   }
 
   // ==========================================================================
+  // Dynamic Island Ambient Lo-Fi Synthesizer & Visualizer
+  // ==========================================================================
+  let ambientSynthTimer = null;
+  let isAmbientPlaying = false;
+  const ambientChords = [
+    [261.63, 329.63, 392.00, 493.88], // Cmaj7
+    [220.00, 261.63, 329.63, 392.00], // Am7
+    [174.61, 220.00, 261.63, 329.63], // Fmaj7
+    [196.00, 246.94, 293.66, 349.23]  // G7
+  ];
+  let currentChordIdx = 0;
+
+  function playAmbientChord() {
+    if (!isAmbientPlaying || !audioCtx) return;
+    try {
+      const now = audioCtx.currentTime;
+      const chord = ambientChords[currentChordIdx % ambientChords.length];
+      currentChordIdx++;
+
+      chord.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(700, now);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.022, now + 0.6);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now + idx * 0.05);
+        osc.stop(now + 3.0);
+      });
+
+      ambientSynthTimer = setTimeout(playAmbientChord, 2600);
+    } catch (e) {
+      console.warn("Ambient synth:", e);
+    }
+  }
+
+  function toggleAmbientAudio(e) {
+    if (e) e.stopPropagation();
+    initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    isAmbientPlaying = !isAmbientPlaying;
+    const island = document.getElementById('dynamic-island');
+    const audioIcon = document.getElementById('island-audio-icon');
+
+    if (isAmbientPlaying) {
+      if (island) island.classList.add('playing');
+      if (audioIcon) {
+        audioIcon.classList.remove('fa-play');
+        audioIcon.classList.add('fa-pause');
+      }
+      playAmbientChord();
+    } else {
+      if (island) island.classList.remove('playing');
+      if (audioIcon) {
+        audioIcon.classList.remove('fa-pause');
+        audioIcon.classList.add('fa-play');
+      }
+      if (ambientSynthTimer) clearTimeout(ambientSynthTimer);
+    }
+  }
+
+  function toggleDynamicIsland(e) {
+    const island = document.getElementById('dynamic-island');
+    if (!island) return;
+    if (e && e.target && e.target.closest('#island-audio-btn')) return;
+    playSound('tap');
+    island.classList.toggle('expanded');
+  }
+
+  function printResume() {
+    playSound('open');
+    window.print();
+  }
+  window.printResume = printResume;
+
+  // ==========================================================================
   // Clock & Status Bar Updates
   // ==========================================================================
   function updateClocks() {
@@ -318,12 +408,19 @@
   • <strong style="color:var(--accent-cyan)">about</strong>       : Abhirup's bio and background
   • <strong style="color:var(--accent-cyan)">skills</strong>      : Technical languages, frameworks & tools
   • <strong style="color:var(--accent-cyan)">projects</strong>    : List all key projects & live links
+  • <strong style="color:var(--accent-cyan)">resume</strong>      : View & Download printable PDF Curriculum Vitae
   • <strong style="color:var(--accent-cyan)">exp</strong>         : Internship & work experience
   • <strong style="color:var(--accent-cyan)">edu</strong>         : Education & certifications
   • <strong style="color:var(--accent-cyan)">contact</strong>     : Email, WhatsApp, Call & Social links
   • <strong style="color:var(--accent-cyan)">matrix</strong>      : Toggle canvas matrix digital rain
   • <strong style="color:var(--accent-cyan)">clear</strong>       : Clear console terminal
   • <strong style="color:var(--accent-cyan)">sudo hire</strong>   : Fast-track recruitment contact link`;
+        break;
+
+      case 'resume':
+      case 'cv':
+        setTimeout(() => openApp('resume'), 200);
+        output = `Opening Curriculum Vitae... You can view and download Abhirup's printable PDF resume.`;
         break;
 
       case 'about':
@@ -732,6 +829,26 @@ ${data.profile.bio}`;
     // Home indicator
     const homeIndicator = document.getElementById('home-indicator');
     if (homeIndicator) homeIndicator.addEventListener('click', closeActiveApp);
+
+    // Dynamic Island & Media Visualizer listeners
+    const dynamicIsland = document.getElementById('dynamic-island');
+    if (dynamicIsland) dynamicIsland.addEventListener('click', toggleDynamicIsland);
+
+    const islandAudioBtn = document.getElementById('island-audio-btn');
+    if (islandAudioBtn) islandAudioBtn.addEventListener('click', toggleAmbientAudio);
+
+    // Close Dynamic Island when clicking outside
+    document.addEventListener('click', (e) => {
+      if (dynamicIsland && dynamicIsland.classList.contains('expanded') && !dynamicIsland.contains(e.target)) {
+        dynamicIsland.classList.remove('expanded');
+      }
+    });
+
+    // Profile Resume / CV button
+    const profileResumeBtn = document.getElementById('profile-resume-btn');
+    if (profileResumeBtn) {
+      profileResumeBtn.addEventListener('click', () => openApp('resume'));
+    }
 
     // Folder open/close listeners
     const folderBtn = document.getElementById('open-folder-btn');
